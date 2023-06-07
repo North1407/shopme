@@ -98,6 +98,8 @@ public class ProductController {
 			model.addAttribute("listReviews", listReviews);
 			model.addAttribute("pageTitle", product.getShortName());
 			
+			model.addAttribute("tonkho", product.getQuantity());
+			
 			return "product/product_detail";
 		} catch (ProductNotFoundException e) {
 			return "error/404";

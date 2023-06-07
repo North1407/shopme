@@ -48,7 +48,7 @@ public class AmazonS3Util {
 	
 	public static void uploadFile(String folderName, String fileName, InputStream inputStream) {
 		S3Client client = S3Client.builder().build();
-		
+	
 		PutObjectRequest request = PutObjectRequest.builder().bucket(BUCKET_NAME)
 				.key(folderName + "/" + fileName).acl("public-read").build();
 		try (inputStream) {

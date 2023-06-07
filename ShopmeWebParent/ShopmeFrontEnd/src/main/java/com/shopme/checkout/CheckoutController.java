@@ -28,7 +28,9 @@ import com.shopme.common.entity.Customer;
 import com.shopme.common.entity.ShippingRate;
 import com.shopme.common.entity.order.Order;
 import com.shopme.common.entity.order.PaymentMethod;
+import com.shopme.common.entity.product.Product;
 import com.shopme.order.OrderService;
+import com.shopme.product.ProductService;
 import com.shopme.setting.CurrencySettingBag;
 import com.shopme.setting.EmailSettingBag;
 import com.shopme.setting.PaymentSettingBag;
@@ -47,6 +49,7 @@ public class CheckoutController {
 	@Autowired private OrderService orderService;
 	@Autowired private SettingService settingService;
 	@Autowired private PayPalService paypalService;
+//	@Autowired private ProductService productService;
 	
 	@GetMapping("/checkout")
 	public String showCheckoutPage(Model model, HttpServletRequest request) {
@@ -101,6 +104,7 @@ public class CheckoutController {
 		}
 				
 		List<CartItem> cartItems = cartService.listCartItems(customer);
+
 		CheckoutInfo checkoutInfo = checkoutService.prepareCheckout(cartItems, shippingRate);
 		
 		Order createdOrder = orderService.createOrder(customer, defaultAddress, cartItems, paymentMethod, checkoutInfo);

@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shopme.admin.paging.PagingAndSortingHelper;
 import com.shopme.admin.paging.PagingAndSortingParam;
+import com.shopme.admin.product.ProductService;
 import com.shopme.admin.security.ShopmeUserDetails;
 import com.shopme.admin.setting.SettingService;
 import com.shopme.common.entity.Country;
@@ -29,14 +30,16 @@ import com.shopme.common.entity.order.OrderTrack;
 import com.shopme.common.entity.product.Product;
 import com.shopme.common.entity.setting.Setting;
 import com.shopme.common.exception.OrderNotFoundException;
+import com.shopme.common.exception.ProductNotFoundException;
 
 @Controller
 public class OrderController {
 	private String defaultRedirectURL = "redirect:/orders/page/1?sortField=orderTime&sortDir=desc";
 	
 	@Autowired private OrderService orderService;
+	@Autowired private ProductService productService;
 	@Autowired private SettingService settingService;
-
+	@Autowired private OrderDetailRepository orderDetailRepository;
 	@GetMapping("/orders")
 	public String listFirstPage() {
 		return defaultRedirectURL;
@@ -183,26 +186,39 @@ public class OrderController {
 		Set<OrderDetail> orderDetails = order.getOrderDetails();
 		
 		for (int i = 0; i < detailIds.length; i++) {
-			System.out.println("Detail ID: " + detailIds[i]);
-			System.out.println("\t Prodouct ID: " + productIds[i]);
-			System.out.println("\t Cost: " + productDetailCosts[i]);
-			System.out.println("\t Quantity: " + quantities[i]);
-			System.out.println("\t Subtotal: " + productSubtotals[i]);
-			System.out.println("\t Ship cost: " + productShipCosts[i]);
+//			System.out.println("Detail ID: " + detailIds[i]);
+//			System.out.println("\t Prodouct ID: " + productIds[i]);
+//			System.out.println("\t Cost: " + productDetailCosts[i]);
+//			System.out.println("\t Quantity: " + quantities[i]);
+//			System.out.println("\t Subtotal: " + productSubtotals[i]);
+//			System.out.println("\t Ship cost: " + productShipCosts[i]);
 			
 			OrderDetail orderDetail = new OrderDetail();
 			Integer detailId = Integer.parseInt(detailIds[i]);
 			if (detailId > 0) {
 				orderDetail.setId(detailId);
 			}
+			OrderDetail od = orderDetailRepository.findById(detailId).get();
+			int oldQuantity = od.getQuantity();//10
 			
 			orderDetail.setOrder(order);
 			orderDetail.setProduct(new Product(Integer.parseInt(productIds[i])));
 			orderDetail.setProductCost(Float.parseFloat(productDetailCosts[i]));
 			orderDetail.setSubtotal(Float.parseFloat(productSubtotals[i]));
 			orderDetail.setShippingCost(Float.parseFloat(productShipCosts[i]));
-			orderDetail.setQuantity(Integer.parseInt(quantities[i]));
+			orderDetail.setQuantity(Integer.parseInt(quantities[i]));//14
 			orderDetail.setUnitPrice(Float.parseFloat(productPrices[i]));
+			Integer id = orderDetail.getProduct().getId();
+			Product product;
+			try {
+				product = productService.get(id);//5
+				product.setQuantity(product.getQuantity() + oldQuantity - orderDetail.getQuantity());
+				productService.save(product);
+		
+			} catch (ProductNotFoundException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e.getMessage());
+			}
 			
 			orderDetails.add(orderDetail);
 			

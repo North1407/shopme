@@ -22,11 +22,12 @@ import com.shopme.common.entity.order.OrderTrack;
 import com.shopme.common.entity.order.PaymentMethod;
 import com.shopme.common.entity.product.Product;
 import com.shopme.common.exception.OrderNotFoundException;
+import com.shopme.product.ProductRepository;
 
 @Service
 public class OrderService {
 	public static final int ORDERS_PER_PAGE = 5;
-	
+	@Autowired private ProductRepository productRepo;
 	@Autowired private OrderRepository repo;
 	
 	public Order createOrder(Customer customer, Address address, List<CartItem> cartItems,
@@ -61,6 +62,15 @@ public class OrderService {
 		for (CartItem cartItem : cartItems) {
 			Product product = cartItem.getProduct();
 			
+			int quanlityInCart = cartItem.getQuantity();
+			int quanlityInDB = product.getQuantity();
+			
+			product.setQuantity(quanlityInDB-quanlityInCart);
+			if(product.getQuantity()==0) {
+				product.setInStock(false);
+			}
+			
+			
 			OrderDetail orderDetail = new OrderDetail();
 			orderDetail.setOrder(newOrder);
 			orderDetail.setProduct(product);
@@ -70,6 +80,7 @@ public class OrderService {
 			orderDetail.setSubtotal(cartItem.getSubtotal());
 			orderDetail.setShippingCost(cartItem.getShippingCost());
 			
+			productRepo.save(product);
 			orderDetails.add(orderDetail);
 		}
 		

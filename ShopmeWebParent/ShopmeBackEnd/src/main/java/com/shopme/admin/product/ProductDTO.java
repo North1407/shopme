@@ -5,12 +5,14 @@ public class ProductDTO {
 	private String imagePath;
 	private float price;
 	private float cost;
+	private int quantity;
 
-	public ProductDTO(String name, String imagePath, float price, float cost) {
+	public ProductDTO(String name, String imagePath, float price, float cost, int quantity) {
 		this.name = name;
 		this.imagePath = imagePath;
 		this.price = price;
 		this.cost = cost;
+		this.quantity = quantity;
 	}
 
 	public String getName() {
@@ -43,6 +45,14 @@ public class ProductDTO {
 
 	public void setCost(float cost) {
 		this.cost = cost;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 }

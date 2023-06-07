@@ -48,4 +48,9 @@ public class ProductService {
 		return repo.search(keyword, pageable);
 		
 	}
+
+	public void save(Product product) {
+		repo.save(product);
+		
+	}
 }

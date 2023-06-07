@@ -83,12 +83,14 @@ public class CustomerService {
 		customer.setCreatedTime(new Date());
 		customer.setAuthenticationType(authenticationType);
 		customer.setPassword("");
-		customer.setAddressLine1("");
-		customer.setCity("");
-		customer.setState("");
-		customer.setPhoneNumber("");
-		customer.setPostalCode("");
-		customer.setCountry(countryRepo.findByCode(countryCode));
+		customer.setAddressLine1("null");
+		customer.setCity("null");
+		customer.setState("null");
+		customer.setPhoneNumber("null");
+		customer.setPostalCode("null");
+		System.out.println(countryCode);
+//		if(countryCode==null) countryCode= "VN";
+		customer.setCountry(countryRepo.findByCode("VN"));
 		
 		customerRepo.save(customer);
 	}	

@@ -55,11 +55,11 @@ function getProductInfo(productId, shippingCost) {
 	$.get(requestURL, function(productJson) {
 		console.log(productJson);
 		productName = productJson.name;
-		mainImagePath = contextPath.substring(0, contextPath.length - 1) + productJson.imagePath;
+		mainImagePath = productJson.imagePath;
 		productCost = $.number(productJson.cost, 2);
 		productPrice = $.number(productJson.price, 2);
-		
-		htmlCode = generateProductCode(productId, productName, mainImagePath, productCost, productPrice, shippingCost);
+		productQuantity = $.number(productJson.quantity);
+		htmlCode = generateProductCode(productId, productName, mainImagePath, productCost, productPrice,productQuantity,  shippingCost);
 		$("#productList").append(htmlCode);
 		
 		updateOrderAmounts();
@@ -69,7 +69,7 @@ function getProductInfo(productId, shippingCost) {
 	});	
 }
 
-function generateProductCode(productId, productName, mainImagePath, productCost, productPrice, shippingCost) {
+function generateProductCode(productId, productName, mainImagePath, productCost, productPrice,productQuantity, shippingCost) {
 	nextCount = productDetailCount + 1;
 	productDetailCount++;
 	rowId = "row" + nextCount;
@@ -110,7 +110,7 @@ function generateProductCode(productId, productName, mainImagePath, productCost,
 				<tr>
 					<td>Quantity:</td>
 					<td>
-						<input type="number" step="1" min="1" max="5" class="form-control m-1 quantity-input"
+						<input type="number" step="1" min="1" max="${productQuantity}" class="form-control m-1 quantity-input"
 							name="quantity"
 							id="${quantityId}"
 							rowNumber="${nextCount}" 

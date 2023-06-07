@@ -25,14 +25,14 @@ public class ShoppingCartService {
 		Product product = new Product(productId);
 		
 		CartItem cartItem = cartRepo.findByCustomerAndProduct(customer, product);
-		
+		Product productInDB = productRepo.findById(productId).get();
 		if (cartItem != null) {
 			updatedQuantity = cartItem.getQuantity() + quantity;
 			
-			if (updatedQuantity > 5) {
+			if (updatedQuantity > productInDB.getQuantity()) {
 				throw new ShoppingCartException("Could not add more " + quantity + " item(s)"
 						+ " because there's already " + cartItem.getQuantity() + " item(s) "
-						+ "in your shopping cart. Maximum allowed quantity is 5.");
+						+ "in your shopping cart. Maximum allowed quantity is "+productInDB.getQuantity()+".");
 			}
 		} else {
 			cartItem = new CartItem();

@@ -45,6 +45,8 @@ public class Product extends IdBasedEntity {
 	
 	private boolean enabled;
 	
+	private int quantity;
+	
 	@Column(name = "in_stock")
 	private boolean inStock;
 	
@@ -148,6 +150,14 @@ public class Product extends IdBasedEntity {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 	public boolean isInStock() {
@@ -258,8 +268,8 @@ public class Product extends IdBasedEntity {
 	@Transient
 	public String getMainImagePath() {
 		if (id == null || mainImage == null) return "/images/image-thumbnail.png";
-		
-		return Constants.S3_BASE_URI +"/product-images/" + this.id + "/" + this.mainImage;
+		return Constants.S3_BASE_URI + "/product-images/" + this.id + "/" + this.mainImage; 
+
 	}
 
 	public List<ProductDetail> getDetails() {
